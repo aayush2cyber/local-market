@@ -1,0 +1,18 @@
+{
+  "name": "nirjuli-market-online",
+  "version": "1.0.0",
+  "description": "Hyperlocal shop directory for Nirjuli, Arunachal Pradesh",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev": "node --watch backend/server.js"
+  },
+  "keywords": ["nirjuli", "hyperlocal", "marketplace", "arunachal-pradesh"],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1"
+  }
+}

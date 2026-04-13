@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Nirjuli Market Online — Find the best local shops in Nirjuli, Arunachal Pradesh. Browse groceries, clothing, electronics, and books from shops near you.">
+  <title>Nirjuli Market Online — Your Local Shop Directory</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="app">
+    <!-- ─── Navbar ─────────────────────────────────── -->
+    <nav class="navbar glass-header" id="navbar">
+      <div class="nav-container">
+        <a href="/" class="logo">
+          <span class="logo-icon">🏪</span>
+          <span class="logo-text">Nirjuli <span class="highlight">Market</span></span>
+        </a>
+        <div class="nav-links">
+          <a href="/" class="nav-link active">Home</a>
+          <a href="/about.html" class="nav-link">About</a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ─── Hero Section ──────────────────────────── -->
+    <section class="hero-section">
+      <div class="hero-particles" id="heroParticles"></div>
+      <div class="hero-content">
+        <div class="hero-badge">🏔️ Arunachal Pradesh's first hyperlocal platform</div>
+        <h1>Discover Local Shops in <span class="highlight">Nirjuli</span></h1>
+        <p class="hero-subtitle">Browse products, compare shops, and connect directly via WhatsApp — all before leaving home.</p>
+        <div class="hero-stats">
+          <div class="stat" id="statShops"><span class="stat-number">0</span><span class="stat-label">Local Shops</span></div>
+          <div class="stat-divider"></div>
+          <div class="stat" id="statCategories"><span class="stat-number">0</span><span class="stat-label">Categories</span></div>
+          <div class="stat-divider"></div>
+          <div class="stat"><span class="stat-number">24/7</span><span class="stat-label">Always Online</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Main Content ──────────────────────────── -->
+    <main>
+      <!-- Search Bar -->
+      <section class="search-section">
+        <div class="search-box glass-card" id="searchBox">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="searchInput" placeholder="Search for shops, groceries, clothes..." autocomplete="off">
+          <span class="search-shortcut" id="searchClear" style="display:none;">
+            <i class="fa-solid fa-xmark"></i>
+          </span>
+        </div>
+      </section>
+
+      <!-- Categories -->
+      <section class="categories-section">
+        <h3 class="section-title">Categories</h3>
+        <div class="categories-scroll" id="categoryContainer">
+          <button class="category-chip active" data-category="">
+            <i class="fa-solid fa-border-all"></i> All
+          </button>
+          <!-- Dynamically populated from API -->
+        </div>
+      </section>
+
+      <!-- Shop List -->
+      <section class="shops-section">
+        <div class="section-header">
+          <h3 class="section-title">Featured Shops</h3>
+          <span class="shop-count" id="shopCount"></span>
+        </div>
+        <div class="shop-grid" id="shopsGrid">
+          <div class="loading-spinner"></div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ─── Shop Details Modal ────────────────────── -->
+    <div class="modal hidden" id="shopModal">
+      <div class="modal-overlay" id="modalOverlay"></div>
+      <div class="modal-content glass-card">
+        <button class="close-btn" id="closeModal"><i class="fa-solid fa-xmark"></i></button>
+        <div id="modalBody">
+          <div class="loading-spinner"></div>
+        </div>
+      </div>
+    </div>
+    <!-- ─── Checkout Modal ────────────────────────────── -->
+    <div class="modal hidden" id="checkoutModal" style="z-index: 1000;">
+      <div class="modal-overlay" id="checkoutModalOverlay"></div>
+      <div class="modal-content glass-card" style="max-width: 500px; padding: 30px;">
+        <button class="close-btn" id="closeCheckoutBtn"><i class="fa-solid fa-xmark"></i></button>
+        <h2 style="margin-bottom:20px; font-size:1.5rem;"><i class="fa-solid fa-truck-fast"></i> Delivery Details</h2>
+        <form id="checkoutForm">
+          <div class="form-group">
+            <label>Full Name *</label>
+            <input type="text" id="checkoutName" required placeholder="John Doe">
+          </div>
+          <div class="form-group">
+            <label>Phone Number *</label>
+            <input type="tel" id="checkoutPhone" required pattern="[0-9]{10}" placeholder="10 digit mobile number">
+          </div>
+          <div class="form-group">
+            <label>Complete Address *</label>
+            <textarea id="checkoutAddress" required rows="3" placeholder="Hostel/Block No, Street, Landmark"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Delivery Instructions (Optional)</label>
+            <input type="text" id="checkoutNotes" placeholder="e.g. Leave at gate, Call when near">
+          </div>
+          <button type="submit" class="checkout-btn" style="margin-top: 10px;">
+            <i class="fa-brands fa-whatsapp"></i> Place Order via WhatsApp
+          </button>
+        </form>
+      </div>
+    </div>
+    <!-- ─── Cart Sidebar ────────────────────────────── -->
+    <div class="cart-overlay hidden" id="cartOverlay"></div>
+    <div class="cart-sidebar" id="cartSidebar">
+      <div class="cart-header">
+        <h3><i class="fa-solid fa-cart-shopping"></i> Your Order</h3>
+        <button class="close-cart-btn" id="closeCartBtn"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="cart-items-container" id="cartItemsContainer">
+        <!-- Cart items populated by JS -->
+      </div>
+      <div class="cart-footer">
+        <div class="cart-options" id="cartOptions" style="display: none;">
+          <div class="option-group">
+            <label>Delivery</label>
+            <div class="radio-group">
+              <label><input type="radio" name="delivery" value="standard" checked onchange="window.__updateBill()"> Standard - ₹30</label>
+              <label><input type="radio" name="delivery" value="express" onchange="window.__updateBill()"> Express - ₹60</label>
+            </div>
+          </div>
+          <div class="option-group">
+            <label>Packaging</label>
+            <div class="radio-group">
+              <label><input type="radio" name="packaging" value="basic" checked onchange="window.__updateBill()"> Basic - Free</label>
+              <label><input type="radio" name="packaging" value="premium" onchange="window.__updateBill()"> Premium Box - ₹20</label>
+            </div>
+          </div>
+          <div class="promo-box">
+            <input type="text" id="promoCodeInput" placeholder="Promo code (e.g. WELCOME10)">
+            <button onclick="window.__applyPromo()">Apply</button>
+          </div>
+          <span id="promoMessage" style="font-size: 0.8rem; margin-top: -6px; margin-bottom: 8px; display: block;"></span>
+          
+          <div class="bill-details">
+             <div class="bill-row"><span>Item Total</span><span id="billSubtotal">₹0</span></div>
+             <div class="bill-row"><span>Platform Fee</span><span>₹5</span></div>
+             <div class="bill-row"><span>Delivery Fee</span><span id="billDelivery">₹30</span></div>
+             <div class="bill-row"><span>Packaging</span><span id="billPackaging">₹0</span></div>
+             <div class="bill-row discount-row" id="billDiscountRow" style="display:none; color:var(--secondary);"><span>Discount (Promo)</span><span id="billDiscount">-₹0</span></div>
+             <div class="bill-row bill-total" style="border-top:1px solid rgba(255,255,255,0.1); padding-top:8px; margin-top:8px; font-size:1.1rem; font-weight:700;">
+                <span>To Pay</span><span id="billTotal">₹0</span>
+             </div>
+          </div>
+          <div id="movWarning" class="mov-warning hidden" style="color:#ff6b6b; font-size:0.85rem; text-align:center; margin-bottom:10px;">
+            Add items worth ₹<span id="movAmount"></span> more to checkout. (Min order ₹99)
+          </div>
+        </div>
+        <button class="checkout-btn" disabled id="checkoutBtnMain">Proceed to Checkout</button>
+      </div>
+    </div>
+
+    <!-- ─── Floating Cart Summary ─────────────────── -->
+    <div class="floating-cart" id="floatingCart" onclick="window.__openCart()">
+      <div class="floating-cart-icon">
+        <i class="fa-solid fa-cart-shopping fa-lg"></i>
+      </div>
+      <div class="floating-cart-info">
+        <span class="floating-cart-items" id="floatingCartItems">0 items</span>
+        <span class="floating-cart-total" id="floatingCartTotal">₹0</span>
+      </div>
+      <i class="fa-solid fa-chevron-right" style="margin-left:auto; color:var(--text-muted)"></i>
+    </div>
+
+    <!-- ─── Footer ────────────────────────────────── -->
+    <footer class="site-footer">
+      <div class="footer-container">
+        <div class="footer-brand">
+          <span class="logo-icon">🏪</span>
+          <span class="logo-text">Nirjuli <span class="highlight">Market</span></span>
+          <p class="footer-tagline">Making Nirjuli's shops discoverable online.</p>
+        </div>
+        <div class="footer-links">
+          <h4>Quick Links</h4>
+          <a href="/">Home</a>
+          <a href="/about.html">About</a>
+        </div>
+        <div class="footer-contact">
+          <h4>For Shop Owners</h4>
+          <p>Want to list your shop?</p>
+          <a href="https://wa.me/919876543210?text=Hi,%20I%20want%20to%20list%20my%20shop%20on%20Nirjuli%20Market%20Online." class="footer-cta" target="_blank">
+            <i class="fa-brands fa-whatsapp"></i> Contact Us
+          </a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Nirjuli Market Online. Built with ❤️ in Arunachal Pradesh.</p>
+      </div>
+    </footer>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

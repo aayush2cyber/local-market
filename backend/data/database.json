@@ -1,0 +1,132 @@
+[
+  {
+    "id": 1,
+    "name": "Nirjuli Super Mart",
+    "category": "Grocery",
+    "phone": "919876543210",
+    "description": "Your one-stop shop for daily groceries, fresh vegetables, and household items.",
+    "address": "Main Market Road, Near SBI ATM, Nirjuli",
+    "rating": 4.8,
+    "image": "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=800&h=600",
+    "products": [
+      {
+        "id": "1_p1",
+        "name": "Fresh Tomatoes",
+        "price": 60,
+        "unit": "kg",
+        "image": "https://images.unsplash.com/photo-1578916171728-46686eac8d58?auto=format&fit=crop&q=80&w=400"
+      },
+      {
+        "id": "1_p2",
+        "name": "Premium Quality Apples",
+        "price": 180,
+        "unit": "kg",
+        "image": "https://images.unsplash.com/photo-1506617420156-8e4536971650?auto=format&fit=crop&q=80&w=400"
+      },
+      {
+        "id": "1_p3",
+        "name": "Aashirvaad Atta",
+        "price": 240,
+        "unit": "5kg",
+        "image": "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=400"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Arunachal Electronics & Mobiles",
+    "category": "Electronics",
+    "phone": "919876543211",
+    "description": "Latest smartphones, accessories, and electronics repair.",
+    "address": "NERIST Gate, Highway Road, Nirjuli",
+    "rating": 4.5,
+    "image": "https://images.unsplash.com/photo-1525201548942-d8732f6617a0?auto=format&fit=crop&q=80&w=800&h=600",
+    "products": [
+      {
+        "id": "2_p1",
+        "name": "iPhone 15 Silicon Case",
+        "price": 499,
+        "unit": "piece",
+        "image": "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&q=80&w=400"
+      },
+      {
+        "id": "2_p2",
+        "name": "Fast Charging Cable Type-C",
+        "price": 299,
+        "unit": "piece",
+        "image": "https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&q=80&w=400"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Trendy Wardrobe",
+    "category": "Clothing",
+    "phone": "919876543212",
+    "description": "Stylish mens and womens clothing, traditional wear, and winter collection.",
+    "address": "Opposite Daily Market, Nirjuli",
+    "rating": 4.9,
+    "image": "https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?auto=format&fit=crop&q=80&w=800&h=600",
+    "products": [
+      {
+        "id": "3_p1",
+        "name": "Mens Cotton T-Shirt",
+        "price": 599,
+        "unit": "piece",
+        "image": "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&q=80&w=400"
+      },
+      {
+        "id": "3_p2",
+        "name": "Womens Denim Jacket",
+        "price": 1299,
+        "unit": "piece",
+        "image": "https://images.unsplash.com/photo-1520006403909-838d6b92c22e?auto=format&fit=crop&q=80&w=400"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "name": "Student Book Corner",
+    "category": "Books",
+    "phone": "919876543213",
+    "description": "Textbooks, stationary, NERIST guides, and competitive exam books.",
+    "address": "Near Boys Hostel, NERIST Campus, Nirjuli",
+    "rating": 4.7,
+    "image": "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&q=80&w=800&h=600",
+    "products": [
+      {
+        "id": "4_p1",
+        "name": "Engineering Mathematics Vol. 1",
+        "price": 450,
+        "unit": "piece",
+        "image": "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&q=80&w=400"
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "name": "Fresh Harvest Veggies",
+    "category": "Grocery",
+    "phone": "919876543214",
+    "description": "Daily fresh local vegetables and organic produce.",
+    "address": "Daily Market, Nirjuli",
+    "rating": 4.6,
+    "image": "https://images.unsplash.com/photo-1488459716781-31db52582fe9?auto=format&fit=crop&q=80&w=800&h=600",
+    "products": [
+      {
+        "id": "5_p1",
+        "name": "Organic Potatoes",
+        "price": 45,
+        "unit": "kg",
+        "image": "https://images.unsplash.com/photo-1566385101042-1a0aa0c1268c?auto=format&fit=crop&q=80&w=400"
+      },
+      {
+        "id": "5_p2",
+        "name": "Fresh Onions",
+        "price": 55,
+        "unit": "kg",
+        "image": "https://images.unsplash.com/photo-1596199050105-6d5d32222916?auto=format&fit=crop&q=80&w=400"
+      }
+    ]
+  }
+]
