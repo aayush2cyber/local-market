@@ -107,6 +107,27 @@
             <i class="fa-solid fa-arrow-right"></i>
           </button>
         </form>
+
+        <!-- OTP Form -->
+        <form id="otpForm" class="auth-form hidden">
+          <div class="auth-header">
+            <h2>Admin Verification</h2>
+            <p>Enter the 6-digit OTP sent to your email.</p>
+          </div>
+          <div class="form-group">
+            <label for="loginOtp"><i class="fa-solid fa-key"></i> OTP</label>
+            <input type="text" id="loginOtp" placeholder="123456" required autocomplete="one-time-code" maxlength="6" pattern="\d{6}">
+            <small style="color:var(--text-muted); margin-top:5px; display:block;">Check your email inbox (and spam folder).</small>
+          </div>
+          <div id="otpError" class="auth-error hidden"></div>
+          <button type="submit" class="auth-submit" id="otpSubmitBtn">
+            <span>Verify & Login</span>
+            <i class="fa-solid fa-check"></i>
+          </button>
+          <button type="button" class="auth-submit" style="background:transparent; color:var(--text-color); border:1px solid var(--border-color); margin-top:10px;" onclick="window.location.reload()">
+            <span>Cancel</span>
+          </button>
+        </form>
       </div>
     </section>
   </div>
@@ -158,6 +179,8 @@
       });
     });
 
+    let pendingAdminEmail = '';
+
     // Login
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -168,23 +191,64 @@
       btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Signing in...';
 
       try {
+        const email = document.getElementById('loginEmail').value;
         const res = await fetch('/api/auth/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            email: document.getElementById('loginEmail').value,
+            email,
             password: document.getElementById('loginPassword').value
           })
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Login failed');
+        
+        if (data.requireOtp) {
+          // Switch to OTP form
+          pendingAdminEmail = data.email || email;
+          document.getElementById('loginForm').classList.add('hidden');
+          document.getElementById('otpForm').classList.remove('hidden');
+          document.querySelector('.auth-tabs').classList.add('hidden'); // hide tabs
+        } else {
+          saveAuth(data.token, data.user);
+          redirectByRole(data.user.role);
+        }
+      } catch (err) {
+        errEl.textContent = err.message;
+        errEl.classList.remove('hidden');
+        btn.disabled = false;
+        btn.innerHTML = '<span>Sign In</span><i class="fa-solid fa-arrow-right"></i>';
+      }
+    });
+
+    // Verify OTP
+    document.getElementById('otpForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const errEl = document.getElementById('otpError');
+      const btn = document.getElementById('otpSubmitBtn');
+      errEl.classList.add('hidden');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Verifying...';
+
+      try {
+        const res = await fetch('/api/auth/verify-otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: pendingAdminEmail,
+            otp: document.getElementById('loginOtp').value
+          })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'OTP Verification failed');
+        
         saveAuth(data.token, data.user);
         redirectByRole(data.user.role);
       } catch (err) {
         errEl.textContent = err.message;
         errEl.classList.remove('hidden');
         btn.disabled = false;
-        btn.innerHTML = '<span>Sign In</span><i class="fa-solid fa-arrow-right"></i>';
+        btn.innerHTML = '<span>Verify & Login</span><i class="fa-solid fa-check"></i>';
       }
     });
 

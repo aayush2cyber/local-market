@@ -123,6 +123,32 @@ function deleteUser(req, res) {
 }
 
 /**
+ * PUT /api/admin/users/:id/approve — Admin: Approve a pending shopkeeper
+ */
+function approveShopkeeper(req, res) {
+  try {
+    const users = readJSON('users.json');
+    const index = users.findIndex(u => u.id === req.params.id);
+
+    if (index === -1) {
+      return res.status(404).json({ error: 'User not found.' });
+    }
+
+    if (users[index].role !== 'shopkeeper') {
+      return res.status(400).json({ error: 'Only shopkeepers require approval.' });
+    }
+
+    users[index].isApproved = true;
+    writeJSON('users.json', users);
+
+    res.json({ message: 'Shopkeeper approved successfully.', user: users[index] });
+  } catch (err) {
+    console.error('Approve shopkeeper error:', err);
+    res.status(500).json({ error: 'Failed to approve shopkeeper.' });
+  }
+}
+
+/**
  * GET /api/admin/products — All products with shopkeeper info
  */
 function getAllProducts(req, res) {
@@ -226,7 +252,7 @@ function getAllOffers(req, res) {
 }
 
 module.exports = {
-  getAnalytics, getUsers, deleteUser,
+  getAnalytics, getUsers, deleteUser, approveShopkeeper,
   getAllProducts, deleteProduct,
   getAllOrders, updateOrderStatus,
   getAllOffers

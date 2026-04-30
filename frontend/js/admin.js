@@ -126,19 +126,31 @@ async function loadUsers() {
 function renderUsers(users) {
   const tbody = document.getElementById('usersBody');
   if (users.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="5" class="table-empty">No users found.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6" class="table-empty">No users found.</td></tr>`;
     return;
   }
   const me = getUser();
   tbody.innerHTML = users.map(u => {
     const date = new Date(u.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
     const roleColor = { admin: '#f59e0b', shopkeeper: '#3b82f6', customer: '#10b981' }[u.role] || '#64748b';
+    
+    let statusHtml = '<span style="color:var(--text-muted);">-</span>';
+    if (u.role === 'shopkeeper') {
+      if (u.isApproved === false) {
+        statusHtml = `<span class="status-badge" style="background:#f59e0b20;color:#f59e0b;">Pending</span>`;
+      } else {
+        statusHtml = `<span class="status-badge" style="background:#10b98120;color:#10b981;">Approved</span>`;
+      }
+    }
+
     return `<tr>
       <td><strong>${escH(u.name)}</strong></td>
       <td style="color:var(--text-muted);font-size:0.9rem;">${escH(u.email)}</td>
       <td><span class="role-badge" style="background:${roleColor}20;color:${roleColor};">${u.role}</span></td>
+      <td>${statusHtml}</td>
       <td style="color:var(--text-muted);font-size:0.9rem;">${date}</td>
       <td class="actions-cell">
+        ${u.role === 'shopkeeper' && u.isApproved === false ? `<button class="btn-icon" style="color:#10b981;" title="Approve shopkeeper" onclick="approveUser('${u.id}','${escH(u.name)}')"><i class="fa-solid fa-check"></i></button>` : ''}
         ${u.id !== me.id ? `<button class="btn-icon btn-delete" title="Delete user" onclick="deleteUser('${u.id}','${escH(u.name)}')"><i class="fa-solid fa-trash"></i></button>` : '<span style="color:var(--text-muted);font-size:0.8rem;">You</span>'}
       </td>
     </tr>`;
@@ -162,6 +174,17 @@ async function deleteUser(id, name) {
     await loadUsers();
     await loadAdminProducts();
     await loadAnalytics();
+  } catch (err) { alert('Failed: ' + err.message); }
+}
+
+async function approveUser(id, name) {
+  if (!confirm(`Approve shopkeeper "${name}"? They will now be able to log in.`)) return;
+  try {
+    const res = await authFetch(`/api/admin/users/${id}/approve`, { method: 'PUT' });
+    if (!res) return;
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error);
+    await loadUsers();
   } catch (err) { alert('Failed: ' + err.message); }
 }
 

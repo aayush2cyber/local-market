@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid');
 const { readJSON, writeJSON } = require('../utils/db');
 const { JWT_SECRET } = require('../middleware/auth');
+const sendEmail = require('../utils/sendEmail');
 
 const USERS_FILE = 'users.json';
 
@@ -62,6 +63,7 @@ async function signup(req, res) {
       shopAddress: userRole === 'shopkeeper' ? '' : undefined,
       deliveryAvailable: userRole === 'shopkeeper' ? false : undefined,
       deliveryCharge: userRole === 'shopkeeper' ? 0 : undefined,
+      isApproved: userRole === 'shopkeeper' ? false : undefined,
       createdAt: new Date().toISOString()
     };
 
@@ -107,10 +109,42 @@ async function login(req, res) {
       return res.status(401).json({ error: 'Invalid email or password.' });
     }
 
+    if (user.role === 'shopkeeper' && user.isApproved === false) {
+      return res.status(403).json({ error: 'Your shop application is pending admin approval.' });
+    }
+
     const validPassword = await bcrypt.compare(password, user.password);
     if (!validPassword) {
       return res.status(401).json({ error: 'Invalid email or password.' });
     }
+
+    // --- ADMIN OTP LOGIC ---
+    if (user.role === 'admin') {
+      const otp = Math.floor(100000 + Math.random() * 900000).toString();
+      const hashedOtp = await bcrypt.hash(otp, 10);
+      
+      const index = users.findIndex(u => u.id === user.id);
+      users[index].otp = hashedOtp;
+      users[index].otpExpiry = Date.now() + 5 * 60 * 1000; // 5 mins
+      writeJSON(USERS_FILE, users);
+
+      const emailSent = await sendEmail(
+        user.email,
+        'Admin Login OTP - Nirjuli Market',
+        `Your admin login OTP is: ${otp}\n\nIt is valid for 5 minutes.`
+      );
+
+      if (!emailSent) {
+        return res.status(500).json({ error: 'Failed to send OTP email. Check server configuration.' });
+      }
+
+      return res.json({
+        message: 'OTP sent to email.',
+        requireOtp: true,
+        email: user.email
+      });
+    }
+    // -----------------------
 
     const token = jwt.sign(
       { id: user.id, email: user.email, role: user.role, name: user.name },
@@ -191,4 +225,63 @@ function updateShopProfile(req, res) {
   }
 }
 
-module.exports = { signup, login, getMe, updateShopProfile };
+/**
+ * POST /api/auth/verify-otp
+ */
+async function verifyOtp(req, res) {
+  try {
+    const { email, otp } = req.body;
+    if (!email || !otp) {
+      return res.status(400).json({ error: 'Email and OTP are required.' });
+    }
+
+    const users = readJSON(USERS_FILE);
+    const index = users.findIndex(u => u.email.toLowerCase() === email.toLowerCase());
+    
+    if (index === -1) {
+      return res.status(401).json({ error: 'Invalid email.' });
+    }
+    
+    const user = users[index];
+    
+    if (!user.otp || !user.otpExpiry) {
+      return res.status(400).json({ error: 'No OTP requested or OTP session expired.' });
+    }
+
+    if (Date.now() > user.otpExpiry) {
+      return res.status(401).json({ error: 'OTP has expired. Please login again.' });
+    }
+
+    const validOtp = await bcrypt.compare(otp, user.otp);
+    if (!validOtp) {
+      return res.status(401).json({ error: 'Invalid OTP.' });
+    }
+
+    // Clear OTP
+    users[index].otp = null;
+    users[index].otpExpiry = null;
+    writeJSON(USERS_FILE, users);
+
+    const token = jwt.sign(
+      { id: user.id, email: user.email, role: user.role, name: user.name },
+      JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+
+    res.json({
+      message: 'Login successful.',
+      token,
+      user: {
+        id: user.id, name: user.name, email: user.email, role: user.role,
+        shopName: user.shopName, shopAddress: user.shopAddress,
+        deliveryAvailable: user.deliveryAvailable, deliveryCharge: user.deliveryCharge
+      }
+    });
+
+  } catch (err) {
+    console.error('Verify OTP error:', err);
+    res.status(500).json({ error: 'Server error during OTP verification.' });
+  }
+}
+
+module.exports = { signup, login, getMe, updateShopProfile, verifyOtp };
