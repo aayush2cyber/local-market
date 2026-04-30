@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Account — Nirjuli Market</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="app">
+    <nav class="navbar glass-header">
+      <div class="nav-container">
+        <a href="/" class="logo">
+          <span class="logo-icon">🏪</span>
+          <span class="logo-text">Nirjuli <span class="highlight">Market</span></span>
+        </a>
+        <div class="nav-links">
+          <a href="/" class="nav-link">Home</a>
+        </div>
+      </div>
+    </nav>
+
+    <main class="dashboard-main">
+      <div class="dashboard-header">
+        <div>
+          <h1><i class="fa-solid fa-bag-shopping"></i> My Account</h1>
+          <p class="dash-subtitle" id="welcomeMsg">Your activity dashboard</p>
+        </div>
+        <a href="/" class="btn-primary">
+          <i class="fa-solid fa-store"></i> Browse Products
+        </a>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-card-icon" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+            <i class="fa-solid fa-receipt"></i>
+          </div>
+          <div class="stat-card-info">
+            <span class="stat-card-value" id="statOrders">0</span>
+            <span class="stat-card-label">Total Orders</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon" style="background: linear-gradient(135deg, #f093fb, #f5576c);">
+            <i class="fa-solid fa-clock"></i>
+          </div>
+          <div class="stat-card-info">
+            <span class="stat-card-value" id="statPending">0</span>
+            <span class="stat-card-label">Pending</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon" style="background: linear-gradient(135deg, #43e97b, #38f9d7);">
+            <i class="fa-solid fa-circle-check"></i>
+          </div>
+          <div class="stat-card-info">
+            <span class="stat-card-value" id="statCompleted">0</span>
+            <span class="stat-card-label">Completed</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">
+            <i class="fa-solid fa-handshake"></i>
+          </div>
+          <div class="stat-card-info">
+            <span class="stat-card-value" id="statOffers">0</span>
+            <span class="stat-card-label">My Offers</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab Navigation -->
+      <div class="dash-tabs">
+        <button class="dash-tab active" id="tab-orders" onclick="switchCustomerTab('orders')">
+          <i class="fa-solid fa-clock-rotate-left"></i> My Orders
+        </button>
+        <button class="dash-tab" id="tab-offers" onclick="switchCustomerTab('offers')">
+          <i class="fa-solid fa-handshake"></i> My Offers
+          <span class="tab-badge hidden" id="offersBadge">0</span>
+        </button>
+      </div>
+
+      <!-- Orders Panel -->
+      <div class="tab-panel" id="panel-orders">
+        <div class="dash-card">
+          <div class="dash-card-header">
+            <h3><i class="fa-solid fa-clock-rotate-left"></i> Order History</h3>
+          </div>
+          <div id="ordersContainer" class="orders-list">
+            <div class="loading-spinner"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Offers Panel -->
+      <div class="tab-panel hidden" id="panel-offers">
+        <div class="dash-card">
+          <div class="dash-card-header">
+            <h3><i class="fa-solid fa-handshake"></i> My Price Offers</h3>
+          </div>
+          <div id="offersContainer" class="orders-list">
+            <div class="loading-spinner"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script src="js/customer.js"></script>
+</body>
+</html>

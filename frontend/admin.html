@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Admin Panel — Nirjuli Market</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div id="app">
+    <nav class="navbar glass-header">
+      <div class="nav-container">
+        <a href="/" class="logo">
+          <span class="logo-icon">🛡️</span>
+          <span class="logo-text">Admin <span class="highlight">Panel</span></span>
+        </a>
+        <div class="nav-links">
+          <a href="/" class="nav-link">Home</a>
+        </div>
+      </div>
+    </nav>
+
+    <main class="dashboard-main">
+      <div class="dashboard-header">
+        <div>
+          <h1><i class="fa-solid fa-shield-halved"></i> Admin Dashboard</h1>
+          <p class="dash-subtitle">Full system overview &amp; management</p>
+        </div>
+      </div>
+
+      <!-- Analytics Stats -->
+      <div class="stats-grid stats-grid-5">
+        <div class="stat-card">
+          <div class="stat-card-icon" style="background: linear-gradient(135deg, #667eea, #764ba2);"><i class="fa-solid fa-users"></i></div>
+          <div class="stat-card-info">
+            <span class="stat-card-value" id="statUsers">0</span>
+            <span class="stat-card-label">Total Users</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon" style="background: linear-gradient(135deg, #f093fb, #f5576c);"><i class="fa-solid fa-store"></i></div>
+          <div class="stat-card-info">
+            <span class="stat-card-value" id="statShops">0</span>
+            <span class="stat-card-label">Shopkeepers</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon" style="background: linear-gradient(135deg, #4facfe, #00f2fe);"><i class="fa-solid fa-box"></i></div>
+          <div class="stat-card-info">
+            <span class="stat-card-value" id="statProducts">0</span>
+            <span class="stat-card-label">Products</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon" style="background: linear-gradient(135deg, #43e97b, #38f9d7);"><i class="fa-solid fa-receipt"></i></div>
+          <div class="stat-card-info">
+            <span class="stat-card-value" id="statOrders">0</span>
+            <span class="stat-card-label">Orders</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon" style="background: linear-gradient(135deg, #fa709a, #fee140);"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+          <div class="stat-card-info">
+            <span class="stat-card-value" id="statRevenue">₹0</span>
+            <span class="stat-card-label">Revenue</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts Row -->
+      <div class="charts-row">
+        <div class="dash-card chart-card">
+          <div class="dash-card-header"><h3><i class="fa-solid fa-chart-line"></i> Revenue (Last 7 Days)</h3></div>
+          <canvas id="revenueChart" height="250"></canvas>
+        </div>
+        <div class="dash-card chart-card">
+          <div class="dash-card-header"><h3><i class="fa-solid fa-chart-pie"></i> Order Status</h3></div>
+          <canvas id="statusChart" height="250"></canvas>
+        </div>
+      </div>
+
+      <!-- Tab Navigation -->
+      <div class="admin-tabs">
+        <button class="admin-tab active" onclick="switchAdminTab('users')"><i class="fa-solid fa-users"></i> Users</button>
+        <button class="admin-tab" onclick="switchAdminTab('products')"><i class="fa-solid fa-boxes-stacked"></i> Products</button>
+        <button class="admin-tab" onclick="switchAdminTab('orders')"><i class="fa-solid fa-receipt"></i> Orders</button>
+        <button class="admin-tab" onclick="switchAdminTab('offers')"><i class="fa-solid fa-handshake"></i> Offers</button>
+      </div>
+
+      <!-- Users Panel -->
+      <div class="admin-panel" id="panel-users">
+        <div class="dash-card">
+          <div class="dash-card-header">
+            <h3><i class="fa-solid fa-users-gear"></i> User Management</h3>
+            <div class="dash-search-box">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" id="userSearch" placeholder="Search users..." oninput="filterUsers()">
+            </div>
+          </div>
+          <div class="table-wrapper">
+            <table class="dash-table">
+              <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Joined</th><th>Actions</th></tr></thead>
+              <tbody id="usersBody"><tr><td colspan="5" class="table-empty"><div class="loading-spinner"></div></td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Products Panel -->
+      <div class="admin-panel hidden" id="panel-products">
+        <div class="dash-card">
+          <div class="dash-card-header">
+            <h3><i class="fa-solid fa-boxes-stacked"></i> All Products</h3>
+            <div class="dash-search-box">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" id="adminProductSearch" placeholder="Search products..." oninput="filterAdminProducts()">
+            </div>
+          </div>
+          <div class="table-wrapper">
+            <table class="dash-table">
+              <thead><tr><th>Image</th><th>Name</th><th>Category</th><th>Price</th><th>Seller</th><th>Actions</th></tr></thead>
+              <tbody id="adminProductsBody"><tr><td colspan="6" class="table-empty"><div class="loading-spinner"></div></td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Orders Panel -->
+      <div class="admin-panel hidden" id="panel-orders">
+        <div class="dash-card">
+          <div class="dash-card-header">
+            <h3><i class="fa-solid fa-receipt"></i> All Orders</h3>
+            <select id="adminOrderFilter" onchange="filterAdminOrders()" class="dash-select">
+              <option value="">All Status</option>
+              <option value="pending">Pending</option>
+              <option value="accepted">Accepted</option>
+              <option value="completed">Completed</option>
+              <option value="rejected">Rejected</option>
+            </select>
+          </div>
+          <div class="table-wrapper">
+            <table class="dash-table">
+              <thead><tr><th>ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Type</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+              <tbody id="adminOrdersBody"><tr><td colspan="8" class="table-empty"><div class="loading-spinner"></div></td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Offers Panel -->
+      <div class="admin-panel hidden" id="panel-offers">
+        <div class="dash-card">
+          <div class="dash-card-header">
+            <h3><i class="fa-solid fa-handshake"></i> All Price Offers</h3>
+          </div>
+          <div class="table-wrapper">
+            <table class="dash-table">
+              <thead><tr><th>Product</th><th>Customer</th><th>Original</th><th>Offered</th><th>Discount</th><th>Status</th><th>Date</th></tr></thead>
+              <tbody id="adminOffersBody"><tr><td colspan="7" class="table-empty"><div class="loading-spinner"></div></td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

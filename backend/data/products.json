@@ -1,0 +1,24 @@
+[
+  {
+    "id": "1b50fb6d-3236-4ae9-bd28-bdbd06c79878",
+    "shopkeeperId": "4327ee06-3631-4082-8fc8-5a27aa3fae64",
+    "name": "Fresh Mangoes",
+    "price": 150,
+    "description": "Sweet Alphonso mangoes",
+    "category": "Grocery",
+    "unit": "kg",
+    "image": "",
+    "createdAt": "2026-04-21T14:07:11.702Z"
+  },
+  {
+    "id": "318441dd-de8b-449e-a527-4fdc5819a40b",
+    "shopkeeperId": "4327ee06-3631-4082-8fc8-5a27aa3fae64",
+    "name": "Organic Rice",
+    "price": 80,
+    "description": "Premium basmati rice",
+    "category": "Grocery",
+    "unit": "kg",
+    "image": "",
+    "createdAt": "2026-04-21T14:07:24.063Z"
+  }
+]

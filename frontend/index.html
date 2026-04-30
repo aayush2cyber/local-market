@@ -32,7 +32,7 @@
       <div class="hero-content">
         <div class="hero-badge">🏔️ Arunachal Pradesh's first hyperlocal platform</div>
         <h1>Discover Local Shops in <span class="highlight">Nirjuli</span></h1>
-        <p class="hero-subtitle">Browse products, compare shops, and connect directly via WhatsApp — all before leaving home.</p>
+        <p class="hero-subtitle">Browse products, compare prices across shops, make offers, and order directly — all before leaving home.</p>
         <div class="hero-stats">
           <div class="stat" id="statShops"><span class="stat-number">0</span><span class="stat-label">Local Shops</span></div>
           <div class="stat-divider"></div>
@@ -49,7 +49,7 @@
       <section class="search-section">
         <div class="search-box glass-card" id="searchBox">
           <i class="fa-solid fa-magnifying-glass"></i>
-          <input type="text" id="searchInput" placeholder="Search for shops, groceries, clothes..." autocomplete="off">
+          <input type="text" id="searchInput" placeholder="Search for products across all shops..." autocomplete="off">
           <span class="search-shortcut" id="searchClear" style="display:none;">
             <i class="fa-solid fa-xmark"></i>
           </span>
@@ -63,7 +63,17 @@
           <button class="category-chip active" data-category="">
             <i class="fa-solid fa-border-all"></i> All
           </button>
-          <!-- Dynamically populated from API -->
+        </div>
+      </section>
+
+      <!-- Marketplace Products -->
+      <section class="shops-section" id="marketplaceSection">
+        <div class="section-header">
+          <h3 class="section-title">🛍️ Marketplace Products</h3>
+          <span style="font-size:0.82rem;color:var(--text-muted);">Add to cart or make an offer</span>
+        </div>
+        <div class="product-browse-grid" id="marketProductsGrid">
+          <div class="loading-spinner"></div>
         </div>
       </section>
 
@@ -84,18 +94,66 @@
       <div class="modal-overlay" id="modalOverlay"></div>
       <div class="modal-content glass-card">
         <button class="close-btn" id="closeModal"><i class="fa-solid fa-xmark"></i></button>
-        <div id="modalBody">
-          <div class="loading-spinner"></div>
-        </div>
+        <div id="modalBody"><div class="loading-spinner"></div></div>
       </div>
     </div>
-    <!-- ─── Checkout Modal ────────────────────────────── -->
+
+    <!-- ─── Make Offer Modal ──────────────────────── -->
+    <div class="modal hidden" id="offerModal" style="z-index:1050;">
+      <div class="modal-overlay" id="offerModalOverlay"></div>
+      <div class="modal-content glass-card" style="max-width:440px;padding:28px;">
+        <button class="close-btn" id="closeOfferModalBtn"><i class="fa-solid fa-xmark"></i></button>
+        <h2 style="margin-bottom:6px;font-size:1.4rem;"><i class="fa-solid fa-handshake"></i> Make an Offer</h2>
+        <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:20px;">Propose your own price. The shopkeeper will accept or decline.</p>
+        <div class="offer-modal-product" id="offerModalProductInfo"></div>
+        <div class="form-group">
+          <label>Your Offer Price</label>
+          <div class="offer-input-group">
+            <span class="rupee-prefix">₹</span>
+            <input type="number" id="offerPriceInput" min="1" step="1" placeholder="0">
+          </div>
+        </div>
+        <div id="offerError" class="auth-error hidden"></div>
+        <div id="offerSuccess" class="auth-success hidden"></div>
+        <button class="offer-btn" id="submitOfferBtn">
+          <i class="fa-solid fa-paper-plane"></i> Send Offer
+        </button>
+      </div>
+    </div>
+
+    <!-- ─── Price Compare Modal ───────────────────── -->
+    <div class="modal hidden" id="compareModal" style="z-index:1050;">
+      <div class="modal-overlay" id="compareModalOverlay"></div>
+      <div class="modal-content glass-card" style="max-width:500px;padding:28px;">
+        <button class="close-btn" id="closeCompareModalBtn"><i class="fa-solid fa-xmark"></i></button>
+        <h2 style="margin-bottom:6px;font-size:1.4rem;"><i class="fa-solid fa-scale-balanced"></i> Compare Prices</h2>
+        <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:20px;">Same product available at these shops</p>
+        <div id="compareModalBody"><div class="loading-spinner"></div></div>
+      </div>
+    </div>
+
+    <!-- ─── Checkout Modal ─────────────────────────── -->
     <div class="modal hidden" id="checkoutModal" style="z-index: 1000;">
       <div class="modal-overlay" id="checkoutModalOverlay"></div>
       <div class="modal-content glass-card" style="max-width: 500px; padding: 30px;">
         <button class="close-btn" id="closeCheckoutBtn"><i class="fa-solid fa-xmark"></i></button>
-        <h2 style="margin-bottom:20px; font-size:1.5rem;"><i class="fa-solid fa-truck-fast"></i> Delivery Details</h2>
+        <h2 style="margin-bottom:20px; font-size:1.5rem;"><i class="fa-solid fa-bag-shopping"></i> Checkout</h2>
         <form id="checkoutForm">
+          <!-- Delivery Type -->
+          <div class="form-group">
+            <label>How would you like to receive your order?</label>
+            <div class="delivery-choice-group" id="deliveryChoiceGroup">
+              <button type="button" class="delivery-choice-option active" id="choicePickup" onclick="selectDelivery('pickup')">
+                <i class="fa-solid fa-person-walking"></i>
+                Pickup
+              </button>
+              <button type="button" class="delivery-choice-option" id="choiceDelivery" onclick="selectDelivery('delivery')">
+                <i class="fa-solid fa-truck"></i>
+                Delivery
+              </button>
+            </div>
+            <div class="delivery-charge-note hidden" id="deliveryChargeNote"></div>
+          </div>
           <div class="form-group">
             <label>Full Name *</label>
             <input type="text" id="checkoutName" required placeholder="John Doe">
@@ -104,72 +162,45 @@
             <label>Phone Number *</label>
             <input type="tel" id="checkoutPhone" required pattern="[0-9]{10}" placeholder="10 digit mobile number">
           </div>
-          <div class="form-group">
-            <label>Complete Address *</label>
-            <textarea id="checkoutAddress" required rows="3" placeholder="Hostel/Block No, Street, Landmark"></textarea>
+          <div class="form-group" id="addressGroup">
+            <label>Delivery Address *</label>
+            <textarea id="checkoutAddress" rows="3" placeholder="House/Block No, Street, Landmark"></textarea>
           </div>
           <div class="form-group">
-            <label>Delivery Instructions (Optional)</label>
+            <label>Notes (Optional)</label>
             <input type="text" id="checkoutNotes" placeholder="e.g. Leave at gate, Call when near">
           </div>
           <button type="submit" class="checkout-btn" style="margin-top: 10px;">
-            <i class="fa-brands fa-whatsapp"></i> Place Order via WhatsApp
+            <i class="fa-solid fa-check-circle"></i> Place Order
           </button>
         </form>
       </div>
     </div>
-    <!-- ─── Cart Sidebar ────────────────────────────── -->
+
+    <!-- ─── Cart Sidebar ──────────────────────────── -->
     <div class="cart-overlay hidden" id="cartOverlay"></div>
     <div class="cart-sidebar" id="cartSidebar">
       <div class="cart-header">
-        <h3><i class="fa-solid fa-cart-shopping"></i> Your Order</h3>
+        <h3><i class="fa-solid fa-cart-shopping"></i> Your Cart</h3>
         <button class="close-cart-btn" id="closeCartBtn"><i class="fa-solid fa-xmark"></i></button>
       </div>
-      <div class="cart-items-container" id="cartItemsContainer">
-        <!-- Cart items populated by JS -->
-      </div>
+      <div class="cart-items-container" id="cartItemsContainer"></div>
       <div class="cart-footer">
         <div class="cart-options" id="cartOptions" style="display: none;">
-          <div class="option-group">
-            <label>Delivery</label>
-            <div class="radio-group">
-              <label><input type="radio" name="delivery" value="standard" checked onchange="window.__updateBill()"> Standard - ₹30</label>
-              <label><input type="radio" name="delivery" value="express" onchange="window.__updateBill()"> Express - ₹60</label>
-            </div>
-          </div>
-          <div class="option-group">
-            <label>Packaging</label>
-            <div class="radio-group">
-              <label><input type="radio" name="packaging" value="basic" checked onchange="window.__updateBill()"> Basic - Free</label>
-              <label><input type="radio" name="packaging" value="premium" onchange="window.__updateBill()"> Premium Box - ₹20</label>
-            </div>
-          </div>
-          <div class="promo-box">
-            <input type="text" id="promoCodeInput" placeholder="Promo code (e.g. WELCOME10)">
-            <button onclick="window.__applyPromo()">Apply</button>
-          </div>
-          <span id="promoMessage" style="font-size: 0.8rem; margin-top: -6px; margin-bottom: 8px; display: block;"></span>
-          
           <div class="bill-details">
-             <div class="bill-row"><span>Item Total</span><span id="billSubtotal">₹0</span></div>
-             <div class="bill-row"><span>Platform Fee</span><span>₹5</span></div>
-             <div class="bill-row"><span>Delivery Fee</span><span id="billDelivery">₹30</span></div>
-             <div class="bill-row"><span>Packaging</span><span id="billPackaging">₹0</span></div>
-             <div class="bill-row discount-row" id="billDiscountRow" style="display:none; color:var(--secondary);"><span>Discount (Promo)</span><span id="billDiscount">-₹0</span></div>
-             <div class="bill-row bill-total" style="border-top:1px solid rgba(255,255,255,0.1); padding-top:8px; margin-top:8px; font-size:1.1rem; font-weight:700;">
-                <span>To Pay</span><span id="billTotal">₹0</span>
-             </div>
-          </div>
-          <div id="movWarning" class="mov-warning hidden" style="color:#ff6b6b; font-size:0.85rem; text-align:center; margin-bottom:10px;">
-            Add items worth ₹<span id="movAmount"></span> more to checkout. (Min order ₹99)
+            <div class="bill-row"><span>Item Total</span><span id="billSubtotal">₹0</span></div>
+            <div class="bill-row"><span>Delivery</span><span id="billDelivery">₹0</span></div>
+            <div class="bill-row bill-total" style="border-top:1px solid rgba(255,255,255,0.1);padding-top:8px;margin-top:8px;font-size:1.1rem;font-weight:700;">
+              <span>To Pay</span><span id="billTotal">₹0</span>
+            </div>
           </div>
         </div>
         <button class="checkout-btn" disabled id="checkoutBtnMain">Proceed to Checkout</button>
       </div>
     </div>
 
-    <!-- ─── Floating Cart Summary ─────────────────── -->
-    <div class="floating-cart" id="floatingCart" onclick="window.__openCart()">
+    <!-- ─── Floating Cart ─────────────────────────── -->
+    <div class="floating-cart" id="floatingCart">
       <div class="floating-cart-icon">
         <i class="fa-solid fa-cart-shopping fa-lg"></i>
       </div>
@@ -207,6 +238,7 @@
     </footer>
   </div>
 
+  <script src="js/auth.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

@@ -1,0 +1,15 @@
+[
+  {
+    "id": "9ae945e0-2f72-4731-80c1-d83bee0d5b84",
+    "productId": "1b50fb6d-3236-4ae9-bd28-bdbd06c79878",
+    "productName": "Fresh Mangoes",
+    "productImage": "",
+    "originalPrice": 150,
+    "offeredPrice": 140,
+    "customerId": "a94f4a0c-abe5-40bb-b254-d45d4d1544a2",
+    "customerName": "Test Customer",
+    "shopkeeperId": "4327ee06-3631-4082-8fc8-5a27aa3fae64",
+    "status": "pending",
+    "createdAt": "2026-04-29T14:26:49.484Z"
+  }
+]

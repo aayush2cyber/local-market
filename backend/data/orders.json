@@ -1,0 +1,32 @@
+[
+  {
+    "id": "38b7254c-a928-4bbc-b7da-2751d2bcb24f",
+    "customerId": "b08aa83b-9500-4c53-9e93-4763831982e1",
+    "customerName": "Test Customer",
+    "customerEmail": "customer@test.com",
+    "phone": "9876543210",
+    "items": [
+      {
+        "productId": "1b50fb6d-3236-4ae9-bd28-bdbd06c79878",
+        "name": "Fresh Mangoes",
+        "price": 150,
+        "quantity": 2,
+        "image": "",
+        "shopkeeperId": "4327ee06-3631-4082-8fc8-5a27aa3fae64"
+      },
+      {
+        "productId": "318441dd-de8b-449e-a527-4fdc5819a40b",
+        "name": "Organic Rice",
+        "price": 80,
+        "quantity": 1,
+        "image": "",
+        "shopkeeperId": "4327ee06-3631-4082-8fc8-5a27aa3fae64"
+      }
+    ],
+    "total": 380,
+    "status": "pending",
+    "address": "NERIST Campus, Nirjuli",
+    "notes": "",
+    "createdAt": "2026-04-21T14:07:42.848Z"
+  }
+]

@@ -1,0 +1,58 @@
+[
+  {
+    "id": "be4c75f4-2bc6-49c1-b82c-83168ae9084a",
+    "name": "Admin",
+    "email": "admin@nirjuli.com",
+    "password": "$2b$10$9RDK9ouEcNvlb3SA9Xa57eEouQKtf6.7evryiR3t7.urLgxzam28y",
+    "role": "admin",
+    "createdAt": "2026-04-21T14:01:17.385Z"
+  },
+  {
+    "id": "4327ee06-3631-4082-8fc8-5a27aa3fae64",
+    "name": "Test Shopkeeper",
+    "email": "shop@test.com",
+    "password": "$2b$10$STiURiTIYzSgI10zouaYweXNwMesrCCHn1LKKp0I0dxPMbnYHoUIe",
+    "role": "shopkeeper",
+    "createdAt": "2026-04-21T14:07:00.075Z"
+  },
+  {
+    "id": "b08aa83b-9500-4c53-9e93-4763831982e1",
+    "name": "Test Customer",
+    "email": "customer@test.com",
+    "password": "$2b$10$bXBxUDIPr5cOPCc8YeZI4O.P5ERbOBOXiNA/paQUEvPXMXYdb83x2",
+    "role": "customer",
+    "createdAt": "2026-04-21T14:07:42.793Z"
+  },
+  {
+    "id": "a94f4a0c-abe5-40bb-b254-d45d4d1544a2",
+    "name": "Test Customer",
+    "email": "testcustomer@nirjuli.com",
+    "password": "$2b$10$97VDQfUMasxgiTf05h2pBu8E1upogs1TybKOtPypMNc0JEvR5TQQy",
+    "role": "customer",
+    "createdAt": "2026-04-29T14:24:44.918Z"
+  },
+  {
+    "id": "d58abeaf-f3ec-4cb0-803e-8d40e841b3bf",
+    "name": "Ramesh Store",
+    "email": "shop195855@test.com",
+    "password": "$2b$10$Oweb6jS3u7GIzWm5Y6mk2.W5AM5e3QknDutSJ7gxP54sft4W82YG6",
+    "role": "shopkeeper",
+    "shopName": "Ramesh Store's Shop",
+    "shopAddress": "",
+    "deliveryAvailable": false,
+    "deliveryCharge": 0,
+    "createdAt": "2026-04-29T14:28:55.959Z"
+  },
+  {
+    "id": "cf611ff0-0336-449d-8981-c501ca12335e",
+    "name": "Demo Shop",
+    "email": "demoshop@nirjuli.com",
+    "password": "$2b$10$3wYQ8iBEMdun3Fr/nqvjVeCjK2X6MVFOBaTiIlejxePPhHzp/aPnG",
+    "role": "shopkeeper",
+    "shopName": "Demo Shop's Shop",
+    "shopAddress": "",
+    "deliveryAvailable": false,
+    "deliveryCharge": 0,
+    "createdAt": "2026-04-29T14:32:10.055Z"
+  }
+]

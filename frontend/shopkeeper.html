@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopkeeper Dashboard — Nirjuli Market</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="app">
+    <nav class="navbar glass-header">
+      <div class="nav-container">
+        <a href="/" class="logo">
+          <span class="logo-icon">🏪</span>
+          <span class="logo-text">Nirjuli <span class="highlight">Market</span></span>
+        </a>
+        <div class="nav-links">
+          <a href="/" class="nav-link">Home</a>
+        </div>
+      </div>
+    </nav>
+
+    <main class="dashboard-main">
+      <div class="dashboard-header">
+        <div>
+          <h1><i class="fa-solid fa-store"></i> My Shop</h1>
+          <p class="dash-subtitle" id="welcomeMsg">Welcome back!</p>
+        </div>
+        <button class="btn-primary" id="addProductBtn" onclick="openAddModal()">
+          <i class="fa-solid fa-plus"></i> Add Product
+        </button>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-card-icon" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+            <i class="fa-solid fa-box"></i>
+          </div>
+          <div class="stat-card-info">
+            <span class="stat-card-value" id="statProducts">0</span>
+            <span class="stat-card-label">My Products</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon" style="background: linear-gradient(135deg, #f093fb, #f5576c);">
+            <i class="fa-solid fa-receipt"></i>
+          </div>
+          <div class="stat-card-info">
+            <span class="stat-card-value" id="statOrders">0</span>
+            <span class="stat-card-label">Pending Orders</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">
+            <i class="fa-solid fa-handshake"></i>
+          </div>
+          <div class="stat-card-info">
+            <span class="stat-card-value" id="statOffers">0</span>
+            <span class="stat-card-label">Pending Offers</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon" style="background: linear-gradient(135deg, #43e97b, #38f9d7);">
+            <i class="fa-solid fa-indian-rupee-sign"></i>
+          </div>
+          <div class="stat-card-info">
+            <span class="stat-card-value" id="statAvgPrice">₹0</span>
+            <span class="stat-card-label">Avg Price</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab Navigation -->
+      <div class="dash-tabs">
+        <button class="dash-tab active" id="tab-products" onclick="switchTab('products')">
+          <i class="fa-solid fa-boxes-stacked"></i> Products
+        </button>
+        <button class="dash-tab" id="tab-orders" onclick="switchTab('orders')">
+          <i class="fa-solid fa-receipt"></i> Orders
+          <span class="tab-badge hidden" id="ordersBadge">0</span>
+        </button>
+        <button class="dash-tab" id="tab-offers" onclick="switchTab('offers')">
+          <i class="fa-solid fa-handshake"></i> Offers
+          <span class="tab-badge hidden" id="offersBadge">0</span>
+        </button>
+        <button class="dash-tab" id="tab-settings" onclick="switchTab('settings')">
+          <i class="fa-solid fa-gear"></i> Shop Settings
+        </button>
+      </div>
+
+      <!-- Products Panel -->
+      <div class="tab-panel" id="panel-products">
+        <div class="dash-card">
+          <div class="dash-card-header">
+            <h3><i class="fa-solid fa-boxes-stacked"></i> My Products</h3>
+            <div class="dash-search-box">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" id="productSearch" placeholder="Search products..." oninput="filterProducts()">
+            </div>
+          </div>
+          <div class="table-wrapper">
+            <table class="dash-table" id="productsTable">
+              <thead>
+                <tr>
+                  <th>Image</th><th>Name</th><th>Category</th>
+                  <th>Price</th><th>Unit</th><th>Added</th><th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="productsBody">
+                <tr><td colspan="7" class="table-empty"><div class="loading-spinner"></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Orders Panel -->
+      <div class="tab-panel hidden" id="panel-orders">
+        <div class="dash-card">
+          <div class="dash-card-header">
+            <h3><i class="fa-solid fa-receipt"></i> Incoming Orders</h3>
+            <div class="order-filter-group">
+              <select id="orderStatusFilter" onchange="filterOrders()" class="dash-select">
+                <option value="">All Orders</option>
+                <option value="pending">Pending</option>
+                <option value="accepted">Accepted</option>
+                <option value="completed">Completed</option>
+                <option value="rejected">Rejected</option>
+              </select>
+            </div>
+          </div>
+          <div id="ordersContainer" class="orders-list">
+            <div class="loading-spinner"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Offers Panel -->
+      <div class="tab-panel hidden" id="panel-offers">
+        <div class="dash-card">
+          <div class="dash-card-header">
+            <h3><i class="fa-solid fa-handshake"></i> Price Offers</h3>
+            <select id="offerStatusFilter" onchange="filterOffers()" class="dash-select">
+              <option value="">All Offers</option>
+              <option value="pending">Pending</option>
+              <option value="accepted">Accepted</option>
+              <option value="rejected">Rejected</option>
+            </select>
+          </div>
+          <div id="offersContainer" class="orders-list">
+            <div class="loading-spinner"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Settings Panel -->
+      <div class="tab-panel hidden" id="panel-settings">
+        <div class="dash-card" style="max-width:620px;">
+          <div class="dash-card-header">
+            <h3><i class="fa-solid fa-store"></i> Shop Profile</h3>
+          </div>
+          <form id="shopSettingsForm" style="padding: 0 4px;">
+            <div class="form-group">
+              <label for="settingShopName"><i class="fa-solid fa-store"></i> Shop Name</label>
+              <input type="text" id="settingShopName" placeholder="e.g. Ramesh Grocery Store">
+            </div>
+            <div class="form-group">
+              <label for="settingShopAddress"><i class="fa-solid fa-location-dot"></i> Shop Address</label>
+              <textarea id="settingShopAddress" rows="2" placeholder="Street, area, landmark"></textarea>
+            </div>
+            <div class="form-group">
+              <label><i class="fa-solid fa-truck"></i> Delivery Settings</label>
+              <div class="delivery-toggle-row">
+                <label class="toggle-switch">
+                  <input type="checkbox" id="settingDeliveryAvailable">
+                  <span class="toggle-slider"></span>
+                </label>
+                <span id="deliveryToggleLabel">Delivery not available</span>
+              </div>
+            </div>
+            <div class="form-group" id="deliveryChargeGroup" style="display:none;">
+              <label for="settingDeliveryCharge"><i class="fa-solid fa-indian-rupee-sign"></i> Delivery Charge (₹)</label>
+              <input type="number" id="settingDeliveryCharge" min="0" step="1" placeholder="e.g. 30">
+            </div>
+            <div id="settingsError" class="auth-error hidden"></div>
+            <div id="settingsSuccess" class="auth-success hidden"></div>
+            <button type="submit" class="auth-submit" id="settingsBtn" style="margin-top:8px;">
+              <span>Save Settings</span>
+              <i class="fa-solid fa-check"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+    </main>
+
+    <!-- Add/Edit Product Modal -->
+    <div class="modal hidden" id="productModal">
+      <div class="modal-overlay" onclick="closeProductModal()"></div>
+      <div class="modal-content glass-card" style="max-width: 560px;">
+        <button class="close-btn" onclick="closeProductModal()"><i class="fa-solid fa-xmark"></i></button>
+        <h2 id="productModalTitle"><i class="fa-solid fa-plus-circle"></i> Add Product</h2>
+        <form id="productForm" enctype="multipart/form-data">
+          <input type="hidden" id="editProductId">
+          <div class="form-group">
+            <label for="pName">Product Name *</label>
+            <input type="text" id="pName" required placeholder="e.g. Fresh Tomatoes">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="pPrice">Price (₹) *</label>
+              <input type="number" id="pPrice" required min="1" step="0.01" placeholder="0.00">
+            </div>
+            <div class="form-group">
+              <label for="pUnit">Unit</label>
+              <input type="text" id="pUnit" placeholder="kg, piece, pack" value="piece">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="pCategory">Category</label>
+            <input type="text" id="pCategory" placeholder="e.g. Grocery, Electronics" value="General">
+          </div>
+          <div class="form-group">
+            <label for="pDesc">Description</label>
+            <textarea id="pDesc" rows="3" placeholder="Brief product description"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="pImage">Product Image</label>
+            <div class="file-upload-area" id="fileUploadArea">
+              <input type="file" id="pImage" accept="image/*" onchange="previewImage(this)">
+              <div class="file-upload-placeholder" id="uploadPlaceholder">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+                <span>Click or drag image here</span>
+                <small>JPEG, PNG, WebP — Max 5MB</small>
+              </div>
+              <img id="imagePreview" class="image-preview hidden" alt="Preview">
+            </div>
+          </div>
+          <div id="productFormError" class="auth-error hidden"></div>
+          <button type="submit" class="auth-submit" id="productFormBtn">
+            <span>Add Product</span>
+            <i class="fa-solid fa-check"></i>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script src="js/shopkeeper.js"></script>
+</body>
+</html>
