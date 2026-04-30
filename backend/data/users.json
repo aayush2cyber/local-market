@@ -2,10 +2,12 @@
   {
     "id": "be4c75f4-2bc6-49c1-b82c-83168ae9084a",
     "name": "Admin",
-    "email": "admin@nirjuli.com",
-    "password": "$2b$10$9RDK9ouEcNvlb3SA9Xa57eEouQKtf6.7evryiR3t7.urLgxzam28y",
+    "email": "aayush2k04@gmail.com",
+    "password": "$2b$10$AS/TZg.tdbzcjFO8Kiy3hef2fbHOpVNIQqdBg73fZE2kAredSPeUu",
     "role": "admin",
-    "createdAt": "2026-04-21T14:01:17.385Z"
+    "createdAt": "2026-04-21T14:01:17.385Z",
+    "otp": "$2b$10$Xazv31Kor/leUNDJAPW1M..poAeu2Nonl4V3iE5AKswVxEKPcjlS2",
+    "otpExpiry": 1777575878432
   },
   {
     "id": "4327ee06-3631-4082-8fc8-5a27aa3fae64",
